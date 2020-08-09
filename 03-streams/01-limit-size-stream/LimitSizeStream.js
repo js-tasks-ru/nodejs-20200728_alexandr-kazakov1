@@ -5,17 +5,16 @@ class LimitSizeStream extends stream.Transform {
   constructor(options) {
     super(options);
     this.limit = options.limit;
-    this.size = '';
+    this.streamData = '';
   }
 
   _transform(chunk, encoding, callback) {
-    this.size += chunk;
+    this.streamData += chunk;
 
-    if (this.size.length > this.limit) {
-      throw new LimitExceededError();
+    if (this.streamData.length > this.limit) {
+      callback(new LimitExceededError());
     } else {
-      this.push(chunk);
-      callback();
+      callback(null, chunk);
     }
   }
 }
